@@ -54,6 +54,27 @@ export class CognitoConstruct extends Construct {
             refreshTokenValidity: Duration.days(30),
             accessTokenValidity: Duration.minutes(60),
         });
+
+        // {
+        //     "Version": "2012-10-17",
+        //     "Id": "default",
+        //     "Statement": [
+        //       {
+        //         "Sid": "CSI_PreTokenGeneration_us-west-2CLLsb7v4x_CSI_PreTokenGeneration",
+        //         "Effect": "Allow",
+        //         "Principal": {
+        //           "Service": "cognito-idp.amazonaws.com"
+        //         },
+        //         "Action": "lambda:InvokeFunction",
+        //         "Resource": "arn:aws:lambda:us-west-2:252703795646:function:cogonito-token-customizer",
+        //         "Condition": {
+        //           "ArnLike": {
+        //             "AWS:SourceArn": "arn:aws:cognito-idp:us-west-2:252703795646:userpool/us-west-2_CLLsb7v4x"
+        //           }
+        //         }
+        //       }
+        //     ]
+        //   }
     }
 
     get pool(): IUserPool {

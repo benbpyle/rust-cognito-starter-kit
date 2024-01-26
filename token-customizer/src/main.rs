@@ -1,4 +1,4 @@
-use aws_events::{
+use aws_lambda_events::cognito::{
     ClaimsAndScopeOverrideDetailsV2, CognitoAccessTokenGenerationV2,
     CognitoEventUserPoolsPreTokenGenResponseV2, CognitoEventUserPoolsPreTokenGenV2,
     CognitoIdTokenGenerationV2, GroupConfiguration,
@@ -10,7 +10,7 @@ use tracing_subscriber::{
     layer::SubscriberExt as _, util::SubscriberInitExt as _, EnvFilter, Layer,
 };
 
-mod aws_events;
+//mod aws_events;
 mod data;
 mod models;
 
@@ -19,14 +19,14 @@ async fn function_handler(
     table_name: &String,
     mut event: LambdaEvent<CognitoEventUserPoolsPreTokenGenV2>,
 ) -> Result<CognitoEventUserPoolsPreTokenGenV2, Error> {
-    let mut m = HashMap::new();
+    let mut access = HashMap::new();
+    let mut id = HashMap::new();
     match event.payload.cognito_event_user_pools_header.user_name {
         Some(ref user_name) => {
             let user = data::fetch_item(client, &table_name, user_name).await?;
-            m.insert(
-                "locationId".to_string(),
-                user.get_current_location().to_string(),
-            );
+            access.insert("interesting_value".to_string(), user.interesting_value);
+            id.insert("first_name".to_string(), user.first_name);
+            id.insert("last_name".to_string(), user.last_name);
         }
         None => {
             event
@@ -41,10 +41,15 @@ async fn function_handler(
     }
 
     let access_token = CognitoAccessTokenGenerationV2 {
-        claims_to_add_or_override: m,
+        claims_to_add_or_override: access,
         claims_to_suppress: vec![],
         scopes_to_add: vec![],
         scopes_to_suppress: vec![],
+    };
+
+    let id_token = CognitoIdTokenGenerationV2 {
+        claims_to_add_or_override: id,
+        claims_to_suppress: vec![],
     };
 
     let ovr = ClaimsAndScopeOverrideDetailsV2 {
@@ -52,9 +57,7 @@ async fn function_handler(
         group_override_details: GroupConfiguration {
             ..Default::default()
         },
-        id_token_generation: Some(CognitoIdTokenGenerationV2 {
-            ..Default::default()
-        }),
+        id_token_generation: Some(id_token),
     };
 
     event.payload.response = CognitoEventUserPoolsPreTokenGenResponseV2 {

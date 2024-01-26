@@ -12,12 +12,12 @@ export class AuthorizerTable extends Construct {
         // dynamodb table
         this._table = new dynamodb.Table(this, id, {
             billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-            removalPolicy: cdk.RemovalPolicy.RETAIN,
+            removalPolicy: cdk.RemovalPolicy.DESTROY,
             partitionKey: {
-                name: "user_id",
+                name: "id",
                 type: dynamodb.AttributeType.STRING,
             },
-            tableName: `SampleUserProfile`,
+            tableName: `SampleUserCustomized`,
             encryption: dynamodb.TableEncryption.AWS_MANAGED,
         });
     }

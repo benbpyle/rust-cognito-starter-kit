@@ -20,9 +20,7 @@ export class TokenCustomizerFunction extends Construct {
             architecture: Architecture.ARM_64,
             environment: {
                 APP_LOG: "access_token_customizer=debug",
-                LOG_LEVEL: "debug",
                 TABLE_NAME: props.table.tableName,
-                IS_LOCAL: "false",
             },
         });
         // add permissions and event sources

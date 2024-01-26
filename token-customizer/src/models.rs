@@ -3,21 +3,12 @@ use thiserror::Error;
 use tracing::error;
 
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "PascalCase")]
 pub struct User {
-    user_id: i64,
-    entity_type: String,
-    user_name: String,
-    first_name: String,
-    last_name: String,
-    //current_location: String,
-    current_org_id: String,
-}
-
-impl User {
-    pub fn get_current_location(&self) -> &str {
-        &self.current_org_id
-    }
+    pub id: String,
+    pub user_id: String,
+    pub first_name: String,
+    pub last_name: String,
+    pub interesting_value: String,
 }
 
 #[derive(Error, Debug)]

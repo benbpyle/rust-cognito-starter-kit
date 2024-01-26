@@ -7,13 +7,10 @@ use tracing::debug;
 
 pub async fn fetch_item(client: &Client, table_name: &str, id: &str) -> Result<User, QueryError> {
     let key = "USER#".to_owned() + id;
-    let key_map: HashMap<String, AttributeValue> = [
-        ("PK".to_string(), AttributeValue::S(key)),
-        ("SK".to_string(), AttributeValue::S("USER".into())),
-    ]
-    .iter()
-    .cloned()
-    .collect();
+    let key_map: HashMap<String, AttributeValue> = [("id".to_string(), AttributeValue::S(key))]
+        .iter()
+        .cloned()
+        .collect();
 
     debug!("(KeyMap)={:?}", key_map);
 
