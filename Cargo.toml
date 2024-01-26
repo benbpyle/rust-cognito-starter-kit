@@ -1,0 +1,3 @@
+[workspace]
+members = ["token-customizer", "token-authorizer"]
+resolver = "2"

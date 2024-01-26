@@ -1,0 +1,29 @@
+[package]
+name = "access-token-customizer"
+version = "0.1.0"
+edition = "2021"
+authors = ["Wade Wilson"]
+
+[dependencies]
+
+serde = "1.0.136"
+serde_json = "1"
+serde_dynamo = { version = "4", features = ["aws-sdk-dynamodb+1"] }
+
+lambda_runtime = "0.8.3"
+aws-config = { features = ["behavior-version-latest"], version = "1.0.1" }
+aws-sdk-dynamodb = "1.2.0"
+
+tokio = { version = "1", features = ["macros"] }
+
+
+thiserror = "1.0.56"
+
+
+tracing = { version = "0.1" }
+tracing-subscriber = { version = "0.3", features = [
+    "json",
+    "env-filter",
+    "registry",
+] }
+openssl = { version = "0.10.35", features = ["vendored"] }
