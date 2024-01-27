@@ -3,6 +3,7 @@ import { Duration, Tags } from "aws-cdk-lib";
 import { Table } from "aws-cdk-lib/aws-dynamodb";
 import { RustFunction } from "cargo-lambda-cdk";
 import { Architecture } from "aws-cdk-lib/aws-lambda";
+import { Effect, PolicyStatement, ServicePrincipal } from "aws-cdk-lib/aws-iam";
 
 interface TokenCustomizerProps {
     table: Table;
@@ -18,6 +19,7 @@ export class TokenCustomizerFunction extends Construct {
             functionName: `cogonito-token-customizer`,
             timeout: Duration.seconds(10),
             architecture: Architecture.ARM_64,
+            memorySize: 256,
             environment: {
                 APP_LOG: "access_token_customizer=debug",
                 TABLE_NAME: props.table.tableName,

@@ -60,8 +60,10 @@ async fn main() -> Result<(), Error> {
 
     tracing_subscriber::registry().with(filtered_layer).init();
 
+    let region_id: std::string::String = std::env::var("REGION_ID").unwrap();
+    let user_pool_id: std::string::String = std::env::var("USER_POOL_ID").unwrap();
     let client_id = &std::env::var("CLIENT_ID").expect("CLIENT_ID must be set");
-    let keyset = jsonwebtokens_cognito::KeySet::new("us-west-2", "us-west-2_0L5QjPT9N").unwrap();
+    let keyset = jsonwebtokens_cognito::KeySet::new(region_id, user_pool_id).unwrap();
     let _ = keyset.prefetch_jwks().await;
     let shared_keyset = &keyset;
 

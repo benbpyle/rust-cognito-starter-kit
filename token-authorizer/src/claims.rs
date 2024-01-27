@@ -38,8 +38,7 @@ pub struct Claim {
     iat: i64,
     iss: String,
     jti: String,
-    #[serde(rename = "locationId")]
-    location_id: String,
+    interesting_value: String,
     origin_jti: String,
     scope: String,
     sub: String,
@@ -62,7 +61,7 @@ pub fn dump_claims(value: &serde_json::Value) -> Result<serde_json::Value, serde
         Ok(c) => {
             let pc = PrivateClaim {
                 user_name: c.username,
-                location_id: c.location_id,
+                location_id: c.interesting_value,
             };
             tracing::debug!("(PrivateClaim): {:?}", pc);
             let pc_v = serde_json::to_value(pc)?;

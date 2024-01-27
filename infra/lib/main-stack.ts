@@ -3,6 +3,9 @@ import { Construct } from "constructs";
 import { AuthorizerTable } from "./data/table-construct";
 import { TokenCustomizerFunction } from "./functions/token-customizer-construct";
 import { CognitoConstruct } from "./cognito/cognito-construct";
+import { AuthorizerFunction } from "./functions/token-authorizer-construct";
+import { ServicePrincipal } from "aws-cdk-lib/aws-iam";
+import { aws_lambda as lambda } from "aws-cdk-lib";
 
 export class MainStack extends cdk.Stack {
     constructor(scope: Construct, id: string) {
@@ -27,17 +30,20 @@ export class MainStack extends cdk.Stack {
             function: tokenCustomizerStack.function,
         });
 
-        // const authorizerStack = new AuthorizerFunction(
-        //     this,
-        //     "AuthorizerFunctionStack",
-        //     {
-        //         options: props.options,
-        //         key: keyStack.key,
-        //         table: tableStack.table,
-        //         stage: props.stageEnvironment,
-        //         version: version,
-        //         pool: cognitoStack.pool,
-        //     }
-        // );
+        const authorizerStack = new AuthorizerFunction(
+            this,
+            "AuthorizerFunctionStack",
+            {
+                version: version,
+                pool: cognitoStack.pool,
+                clientId: cognitoStack.client.userPoolClientId,
+            }
+        );
+
+        tokenCustomizerStack.function.addPermission("AuthorizerPermission", {
+            action: "lambda:InvokeFunction",
+            principal: new ServicePrincipal("cognito-idp.amazonaws.com"),
+            sourceArn: cognitoStack.pool.userPoolArn,
+        });
     }
 }
